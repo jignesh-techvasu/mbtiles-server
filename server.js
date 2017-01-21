@@ -1,7 +1,9 @@
 var express = require("express"),
-    app = express(),
-    MBTiles = require('mbtiles'),
-    p = require("path");
+  app = express(),
+  MBTiles = require('mbtiles'),
+  p = require("path");
+
+app.use(express.static('public'));
 
 // path to the mbtiles; default is the server.js directory
 var tilesDir = __dirname;
@@ -33,13 +35,16 @@ function getContentType(t) {
 }
 
 // tile cannon
-app.get('/:s/:z/:x/:y.:t', function(req, res) {
-  new MBTiles(p.join(tilesDir, req.params.s + '.mbtiles'), function(err, mbtiles) {
-    mbtiles.getTile(req.params.z, req.params.x, req.params.y, function(err, tile, headers) {
+app.get('/:s/:z/:x/:y.:t', function (req, res) {
+  new MBTiles(p.join(tilesDir, req.params.s + '.mbtiles'), function (err, mbtiles) {
+    mbtiles.getTile(req.params.z, req.params.x, req.params.y, function (err, tile, headers) {
       if (err) {
-        res.set({"Content-Type": "text/plain"});
+        res.set({
+          "Content-Type": "text/plain"
+        });
         res.status(404).send('Tile rendering error: ' + err + '\n');
-      } else {
+      }
+      else {
         res.set(getContentType(req.params.t));
         res.send(tile);
       }
@@ -49,5 +54,5 @@ app.get('/:s/:z/:x/:y.:t', function(req, res) {
 });
 
 // start up the server
-console.log('Listening on port: ' + 3000);
-app.listen(3000);
+console.log('Listening on port: ' + 8080);
+app.listen(8080);
