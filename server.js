@@ -42,7 +42,7 @@ app.get('/:s/:z/:x/:y.:t', function (req, res) {
         res.set({
           "Content-Type": "text/plain"
         });
-        res.status(404).send('Tile rendering error: ' + err + '\n');
+        res.status(204).send('Tile rendering error: ' + err + '\n');
       }
       else {
         res.set(getContentType(req.params.t));

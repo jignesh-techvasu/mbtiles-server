@@ -1,58 +1,71 @@
-mapboxgl.accessToken = 'pk.eyJ1IjoibWFwdXRvcGlhIiwiYSI6IjZ6REI2MWsifQ.Apr0jB7q-uSUXWNvJlXGTg';
+/* global mapboxgl */
+/* global fetch */
 
-var simple = {
-    "version": 8,
-    "name": "Klokantech Basic",
-    "metadata": {
-        "mapbox:autocomposite": false,
-        "mapbox:type": "template",
-        "maputnik:renderer": "mbgljs",
-        "openmaptiles:version": "3.x",
-        "openmaptiles:mapbox:owner": "openmaptiles",
-        "openmaptiles:mapbox:source:url": "mapbox://openmaptiles.4qljc88t"
-    },
-    "center": [
-    8.54806714892635,
-    47.37180823552663
-  ],
-    "zoom": 12.241790506353492,
-    "bearing": 0,
-    "pitch": 0,
-    "sources": {
-        "county": {
-            "type": "vector",
-            "tiles": [
-        "http://nodejs-server-royhobbstn.c9users.io/county_carto_2015/{z}/{x}/{y}.pbf"
-      ],
-            "minZoom": 0,
-            "maxZoom": 14,
-            "maxzoom": 13
-        }
-    },
-    "glyphs": "https://free.tilehosting.com/fonts/{fontstack}/{range}.pbf?key={key}",
-    "layers": [
-        {
-            "id": "county",
-            "type": "fill",
-            "source": "county",
-            "source-layer": "county",
-            "minzoom": 0,
-            "maxzoom": 13,
-            "paint": {
-                "fill-opacity": 0.5,
-                "fill-color": "rgba(158, 49, 49, 1)",
-                "fill-antialias": true
-            }
-    }
-  ],
-    "id": "ciwf4zbsv007y2pmt2rspc1dc"
-};
 
-var map = new mapboxgl.Map({
-    container: 'map',
-    style: simple,
-    zoom: 3,
-    center: [-104, 39]
+// load maputnik style and census data
+
+Promise.all([
+    fetch('maputnik_style.json'),
+    fetch('https://gis.dola.colorado.gov/capi/demog?limit=99999&db=acs1115&table=b25077,b19013&sumlev=50')
+    ]).then(function (response) {
+    return Promise.all(response.map(d => d.json())).then(data => {
+        createMap(data);
+    });
+}).catch(function (err) {
+    console.log(err);
 });
 
-map.addControl(new mapboxgl.NavigationControl());
+
+function createMap(data) {
+
+    let style = data[0];
+    let census_data = data[1];
+
+    var stops = [];
+
+    census_data.data.forEach(function (row) {
+
+        let color = "#edf8fb";
+
+        if (row.b19013001 > 26527) {
+            color = "#ccece6";
+        }
+        if (row.b19013001 > 37201) {
+            color = "#99d8c9";
+        }
+        if (row.b19013001 > 44517) {
+            color = "#66c2a4";
+        }
+        if (row.b19013001 > 52137) {
+            color = "#41ae76";
+        }
+        if (row.b19013001 > 62302) {
+            color = "#238b45";
+        }
+        if (row.b19013001 > 77930) {
+            color = "#005824";
+        }
+
+        stops.push([row.geonum, color]);
+    });
+
+
+    let median_household_income_style = {
+        "property": "geonum",
+        "type": "categorical",
+        "stops": stops
+    };
+
+    style.layers[0].paint['fill-color'] = median_household_income_style;
+
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: style,
+        zoom: 3,
+        center: [-104, 39]
+    });
+
+    map.addControl(new mapboxgl.NavigationControl());
+
+
+}
