@@ -11,7 +11,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": "https://github.com/tobinbradley/mbtiles-server",
-  "author": "Tobin Bradley",
+  "repository": "https://github.com/royhobbstn/mbtiles-server.git",
+  "author": "Daniel Trone",
   "license": "MIT"
 }

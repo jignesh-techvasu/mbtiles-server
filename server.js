@@ -6,7 +6,7 @@ var express = require("express"),
 app.use(express.static('public'));
 
 // path to the mbtiles; default is the server.js directory
-var tilesDir = __dirname;
+var tilesDir = __dirname + '/mbtiles';
 
 // Set return header
 function getContentType(t) {
