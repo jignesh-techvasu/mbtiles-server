@@ -3,7 +3,6 @@ var express = require("express"),
   MBTiles = require('mbtiles'),
   p = require("path");
 
-app.use(express.static('public'));
 
 // path to the mbtiles; default is the server.js directory
 var tilesDir = __dirname + '/mbtiles';
