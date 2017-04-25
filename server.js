@@ -38,10 +38,8 @@ app.get('/:s/:z/:x/:y.:t', function (req, res) {
   new MBTiles(p.join(tilesDir, req.params.s + '.mbtiles'), function (err, mbtiles) {
     mbtiles.getTile(req.params.z, req.params.x, req.params.y, function (err, tile, headers) {
       if (err) {
-        res.set({
-          "Content-Type": "text/plain"
-        });
-        res.status(204).send('Tile rendering error: ' + err + '\n');
+        res.set(getContentType(''));
+        res.sendStatus(204);
       }
       else {
         res.set(getContentType(req.params.t));
