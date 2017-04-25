@@ -36,19 +36,25 @@ function getContentType(t) {
 // tile cannon
 app.get('/:s/:z/:x/:y.:t', function (req, res) {
   new MBTiles(p.join(tilesDir, req.params.s + '.mbtiles'), function (err, mbtiles) {
-    mbtiles.getTile(req.params.z, req.params.x, req.params.y, function (err, tile, headers) {
-      if (err) {
-        res.set(getContentType('')); // set CORS headers but don't add content type
-        res.sendStatus(204);
-      }
-      else {
-        res.set(getContentType(req.params.t));
-        res.send(tile);
-      }
-    });
+
     if (err) {
       console.log('error opening database');
+      res.set(getContentType('')); // set CORS headers but don't add content type
+      res.sendStatus(404);
     }
+    else {
+      mbtiles.getTile(req.params.z, req.params.x, req.params.y, function (err, tile, headers) {
+        if (err) {
+          res.set(getContentType('')); // set CORS headers but don't add content type
+          res.sendStatus(204);
+        }
+        else {
+          res.set(getContentType(req.params.t));
+          res.send(tile);
+        }
+      });
+    }
+
   });
 });
 
