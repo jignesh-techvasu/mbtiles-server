@@ -59,5 +59,5 @@ app.get('/:s/:z/:x/:y.:t', function (req, res) {
 });
 
 // start up the server
-console.log('Listening on port: ' + 8080);
-app.listen(8080);
+console.log('Listening on port: ' + 4001);
+app.listen(4001);
